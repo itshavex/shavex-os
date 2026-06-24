@@ -119,16 +119,16 @@ export default function Dashboard() {
                 <span className="stat-label" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem' }}>
                   <Target size={12} color="var(--primary)" /> 🎯 Destination
                 </span>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '4px 0 0 0', color: '#fff' }}>
-                  {currentGoalName}
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: '4px 0 0 0', color: '#fff', lineHeight: '1.4' }}>
+                  {Object.keys(state.goals || {}).length > 0 ? currentGoalName : "Choose your destination to begin your journey."}
                 </h3>
               </div>
               <div>
                 <span className="stat-label" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem' }}>
                   <Compass size={12} color="var(--accent-orange)" /> 📍 Current Position
                 </span>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '4px 0 0 0', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {activePhase?.name || "Foundations"}
+                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, margin: '4px 0 0 0', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {Object.keys(state.goals || {}).length > 0 ? (activePhase?.name || "Create your first journey map.") : "--"}
                 </h3>
               </div>
             </div>
@@ -140,23 +140,27 @@ export default function Dashboard() {
               </span>
               <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '16px' }}>
                 <div style={{ display: 'flex', justify: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                  <h4 style={{ fontSize: '1.1rem', margin: 0, color: '#fff', fontWeight: 700 }}>
-                    {state.nextMove?.task}
+                  <h4 style={{ fontSize: '1rem', margin: 0, color: '#fff', fontWeight: 700, lineHeight: '1.4' }}>
+                    {Object.keys(state.goals || {}).length > 0 ? (state.nextMove?.task || "Create your first journey map.") : "Choose your destination to begin your journey."}
                   </h4>
-                  <span className="timeline-badge active" style={{ fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
-                    ⏱ {state.nextMove?.estimatedTime}
-                  </span>
+                  {Object.keys(state.goals || {}).length > 0 && state.nextMove?.estimatedTime && state.nextMove?.estimatedTime !== "--" && (
+                    <span className="timeline-badge active" style={{ fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
+                      ⏱ {state.nextMove?.estimatedTime}
+                    </span>
+                  )}
                 </div>
                 
                 <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                  <span>Expected Impact: <strong style={{ color: 'var(--accent-orange)' }}>{state.nextMove?.impact}</strong></span>
-                  <button 
-                    onClick={handleStartNextMoveFocus} 
-                    className="focus-btn" 
-                    style={{ height: '28px', padding: '0 12px', fontSize: '0.72rem', fontWeight: 700 }}
-                  >
-                    Start Mission
-                  </button>
+                  <span>Expected Impact: <strong style={{ color: 'var(--accent-orange)' }}>{Object.keys(state.goals || {}).length > 0 ? (state.nextMove?.impact || "--") : "--"}</strong></span>
+                  {Object.keys(state.goals || {}).length > 0 && state.nextMove?.task && (
+                    <button 
+                      onClick={handleStartNextMoveFocus} 
+                      className="focus-btn" 
+                      style={{ height: '28px', padding: '0 12px', fontSize: '0.72rem', fontWeight: 700 }}
+                    >
+                      Start Mission
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

@@ -253,6 +253,12 @@ export const INITIAL_STATE = {
   },
 
   auth: {
-    user: null
+    user: {
+      id: "guest_user",
+      email: "guest@shavex.os",
+      user_metadata: {
+        full_name: "Guest Explorer"
+      }
+    }
   }
 };

@@ -232,10 +232,16 @@ export default function Roadmaps() {
             <Map size={16} className="inline mr-1" /> Journey Map Visual Pipeline
           </h3>
 
-          {!activeGoal ? (
+          {!activeGoal || Object.keys(goals).length === 0 ? (
             <div className="glass p-8 text-center">
               <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                No active objectives configured. Create a goal inside the Goal Destinations directory on the right.
+                Choose your destination to begin your journey.
+              </p>
+            </div>
+          ) : !activeGoal.phases || activeGoal.phases.length === 0 ? (
+            <div className="glass p-8 text-center">
+              <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                Create your first journey map.
               </p>
             </div>
           ) : (

@@ -15,41 +15,7 @@ export default function Auth() {
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Cloud sync settings
-  const [showConfig, setShowConfig] = useState(false);
-  const [dbUrl, setDbUrl] = useState('');
-  const [dbKey, setDbKey] = useState('');
-
-  useEffect(() => {
-    // Populate DB settings if already customized
-    const creds = supabaseAdapter.getCredentials();
-    setDbUrl(creds.url || '');
-    setDbKey(creds.key || '');
-  }, []);
-
-  const handleConfigSave = (e) => {
-    e.preventDefault();
-    const success = supabaseAdapter.setCredentials(dbUrl.trim(), dbKey.trim());
-    if (success) {
-      setSuccessMsg('Database credentials updated. Reloading client...');
-      setErrorMsg('');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } else {
-      setErrorMsg('Invalid URL or Key format.');
-    }
-  };
-
-  const handleConfigClear = () => {
-    supabaseAdapter.setCredentials('', '');
-    setDbUrl('');
-    setDbKey('');
-    setSuccessMsg('Cloud credentials cleared. Running in Simulated Local Mode.');
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
-  };
+  const [showForms, setShowForms] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +38,6 @@ export default function Auth() {
         } else if (user) {
           setSuccessMsg('Account created successfully! Logging in...');
           setTimeout(async () => {
-            // Trigger Context load
             await handleUserLogin(user);
           }, 1000);
         }
@@ -113,11 +78,9 @@ export default function Auth() {
     }
   };
 
-  const isCloud = supabaseAdapter.isCloudEnabled();
-
   return (
     <div className="auth-overlay" style={{ display: 'flex', zIndex: 120 }}>
-      <div className="auth-card glass">
+      <div className="auth-card glass" style={{ maxWidth: '480px' }}>
         <div className="sidebar-logo" style={{ justifyContent: 'center', marginBottom: '20px' }}>
           <div className="logo-icon">
             <Cpu style={{ color: '#fff', width: '20px', height: '20px' }} />
@@ -128,217 +91,199 @@ export default function Auth() {
           </div>
         </div>
 
-        {/* Database Config Toggler */}
+        {/* Landing Value Proposition Previews */}
+        <div className="landing-preview-grid" style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          margin: '24px 0',
+          textAlign: 'left'
+        }}>
+          <div className="glass p-3" style={{ border: '1px solid var(--border-color)', borderRadius: '8px', background: 'rgba(255,255,255,0.01)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--primary)' }}>
+              🎯 Destination Goals
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.4' }}>
+              Select target roadmaps (AI Engineer, Full Stack, Data Science) or map custom growth timelines.
+            </div>
+          </div>
+          <div className="glass p-3" style={{ border: '1px solid var(--border-color)', borderRadius: '8px', background: 'rgba(255,255,255,0.01)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--accent-orange)' }}>
+              🚀 Next Move Engine
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.4' }}>
+              No more guessing what is next. Let the engine calculate the optimal learning checkpoint dynamically.
+            </div>
+          </div>
+          <div className="glass p-3" style={{ border: '1px solid var(--border-color)', borderRadius: '8px', background: 'rgba(255,255,255,0.01)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--accent-green)' }}>
+              📝 Daily Time-Budget Missions
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.4' }}>
+              Select available minutes (15m, 30m, 1h, 2h) to generate tailored daily focus tasks immediately.
+            </div>
+          </div>
+        </div>
+
+        {/* Primary Guest Mode Entrance */}
+        <button 
+          onClick={() => handleUserLogin({ id: 'guest_user', email: 'guest@shavex.os', user_metadata: { full_name: 'Guest Explorer' } })}
+          className="focus-btn" 
+          style={{ width: '100%', height: '44px', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--primary)', marginBottom: '12px' }}
+        >
+          Explore ShaVex OS Beta (Guest Mode)
+        </button>
+
+        {/* Technical credentials collapsible toggle */}
         <button
-          onClick={() => setShowConfig(!showConfig)}
+          onClick={() => setShowForms(!showForms)}
           style={{
             background: 'transparent',
             border: 'none',
-            color: 'var(--primary)',
-            fontSize: '0.7rem',
+            color: 'var(--text-tertiary)',
+            fontSize: '0.72rem',
             cursor: 'pointer',
             display: 'block',
-            margin: '0 auto 16px auto',
+            margin: '16px auto 0 auto',
             textDecoration: 'underline',
           }}
         >
-          {showConfig ? 'Hide Cloud Config Fields' : 'Configure Cloud Sync Database Credentials'}
+          {showForms ? 'Hide Custom Login / Signup' : 'Connect Developer Sync Account / Social Log In'}
         </button>
 
-        {showConfig && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              marginBottom: '16px',
-              padding: '10px',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '6px',
-              border: '1px solid var(--border-color)',
-            }}
-          >
-            <label style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Supabase URL</label>
-            <input
-              type="text"
-              className="task-input"
-              placeholder="https://your-supabase-url.supabase.co"
-              style={{ padding: '6px', fontSize: '0.75rem' }}
-              value={dbUrl}
-              onChange={(e) => setDbUrl(e.target.value)}
-            />
-            <label style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Supabase Anon Key</label>
-            <input
-              type="text"
-              className="task-input"
-              placeholder="your-supabase-anon-key"
-              style={{ padding: '6px', fontSize: '0.75rem' }}
-              value={dbKey}
-              onChange={(e) => setDbKey(e.target.value)}
-            />
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '4px' }}>
-              <button onClick={handleConfigSave} className="focus-btn" style={{ height: '28px', fontSize: '0.7rem' }}>
-                Save & Connect
+        {showForms && (
+          <div className="animate-fade-in" style={{ marginTop: '20px', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
+            {errorMsg && (
+              <div style={{ display: 'flex', gap: '6px', color: 'var(--accent-orange)', fontSize: '0.75rem', marginBottom: '16px', justifyContent: 'center' }}>
+                <AlertCircle size={14} className="mt-0.5" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {successMsg && (
+              <div style={{ color: 'var(--accent-green)', fontSize: '0.75rem', marginBottom: '16px', textAlign: 'center' }}>
+                {successMsg}
+              </div>
+            )}
+
+            {mode === 'forgot' ? (
+              <div>
+                <h3 style={{ textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700, marginBottom: '8px' }}>
+                  Reset Password
+                </h3>
+                <p style={{ textAlign: 'center', fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                  Enter email to recover database sync session
+                </p>
+                <form onSubmit={handleSubmit} className="internship-notes-form">
+                  <div className="form-group">
+                    <label>Email Address</label>
+                    <input
+                      type="email"
+                      className="task-input"
+                      placeholder="shashwat@shavex.ai"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button type="submit" disabled={loading} className="focus-btn" style={{ height: '38px', marginTop: '8px', width: '100%' }}>
+                    {loading ? 'Processing...' : 'Send Recovery Email'}
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h3 style={{ textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700, marginBottom: '8px' }}>
+                  {mode === 'signup' ? 'Create OS Account' : 'Log In to your OS'}
+                </h3>
+                <p style={{ textAlign: 'center', fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                  {mode === 'signup' ? 'Enter parameters to register credentials' : 'Enter your credentials below to sync your workspace'}
+                </p>
+
+                <form onSubmit={handleSubmit} className="internship-notes-form">
+                  {mode === 'signup' && (
+                    <div className="form-group">
+                      <label>Full Name</label>
+                      <input
+                        type="text"
+                        className="task-input"
+                        placeholder="e.g. Shashwat Tiwari"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  )}
+                  <div className="form-group">
+                    <label>Email Address</label>
+                    <input
+                      type="email"
+                      className="task-input"
+                      placeholder="shashwat@shavex.ai"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      className="task-input"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button type="submit" disabled={loading} className="focus-btn" style={{ height: '38px', marginTop: '8px', width: '100%' }}>
+                    {loading ? 'Processing...' : mode === 'signup' ? 'Sign Up' : 'Log In'}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            <div className="auth-separator">
+              <span>OR CONTINUE WITH</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+              <button onClick={() => handleOAuthLogin('google')} className="priority-toggle" style={{ justifyContent: 'center', height: '36px' }}>
+                <Chrome style={{ width: '12px', height: '12px', marginRight: '6px' }} /> Google
               </button>
-              <button
-                onClick={handleConfigClear}
-                className="priority-toggle"
-                style={{ height: '28px', fontSize: '0.7rem', color: 'var(--text-tertiary)' }}
-              >
-                Clear / Local Mode
+              <button onClick={() => handleOAuthLogin('github')} className="priority-toggle" style={{ justifyContent: 'center', height: '36px' }}>
+                <Github style={{ width: '12px', height: '12px', marginRight: '6px' }} /> GitHub
               </button>
             </div>
-          </div>
-        )}
 
-        {/* Info alerts */}
-        {!isCloud && !showConfig && (
-          <p
-            style={{
-              fontSize: '0.68rem',
-              color: 'var(--text-secondary)',
-              background: 'rgba(255, 145, 0, 0.05)',
-              border: '1px solid rgba(255,145,0,0.1)',
-              padding: '6px 10px',
-              borderRadius: '6px',
-              textAlign: 'center',
-              marginBottom: '16px',
-            }}
-          >
-            Running in <strong>Simulated Guest Mode</strong> (Offline Local Caching). Config credentials above to link live databases.
-          </p>
-        )}
-
-        {errorMsg && (
-          <div style={{ display: 'flex', gap: '6px', color: 'var(--accent-orange)', fontSize: '0.75rem', marginBottom: '16px', justifyContent: 'center' }}>
-            <AlertCircle size={14} className="mt-0.5" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        {successMsg && (
-          <div style={{ color: 'var(--accent-green)', fontSize: '0.75rem', marginBottom: '16px', textAlign: 'center' }}>
-            {successMsg}
-          </div>
-        )}
-
-        {/* Input panels */}
-        {mode === 'forgot' ? (
-          <div>
-            <h3 style={{ textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>
-              Reset Password
-            </h3>
-            <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-              Enter email address to recover your database sync key
-            </p>
-            <form onSubmit={handleSubmit} className="internship-notes-form">
-              <div className="form-group">
-                <label>Email Address</label>
-                <input
-                  type="email"
-                  className="task-input"
-                  placeholder="shashwat@shavex.ai"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <button type="submit" disabled={loading} className="focus-btn" style={{ height: '42px', marginTop: '8px', width: '100%' }}>
-                {loading ? 'Processing...' : 'Send Recovery Email'}
-              </button>
-            </form>
-          </div>
-        ) : (
-          <div>
-            <h3 style={{ textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>
-              {mode === 'signup' ? 'Create OS Account' : 'Log In to your OS'}
-            </h3>
-            <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-              {mode === 'signup' ? 'Enter parameters to register credentials' : 'Enter your credentials below to sync your workspace'}
-            </p>
-
-            <form onSubmit={handleSubmit} className="internship-notes-form">
-              {mode === 'signup' && (
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <input
-                    type="text"
-                    className="task-input"
-                    placeholder="e.g. Shashwat Tiwari"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                </div>
-              )}
-              <div className="form-group">
-                <label>Email Address</label>
-                <input
-                  type="email"
-                  className="task-input"
-                  placeholder="shashwat@shavex.ai"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  type="password"
-                  className="task-input"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button type="submit" disabled={loading} className="focus-btn" style={{ height: '42px', marginTop: '8px', width: '100%' }}>
-                {loading ? 'Processing...' : mode === 'signup' ? 'Sign Up' : 'Log In'}
-              </button>
-            </form>
-          </div>
-        )}
-
-        <div className="auth-separator">
-          <span>OR CONTINUE WITH</span>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-          <button onClick={() => handleOAuthLogin('google')} className="priority-toggle" style={{ justifyContent: 'center', height: '38px' }}>
-            <Chrome style={{ width: '14px', height: '14px', marginRight: '6px' }} /> Google
-          </button>
-          <button onClick={() => handleOAuthLogin('github')} className="priority-toggle" style={{ justifyContent: 'center', height: '38px' }}>
-            <Github style={{ width: '14px', height: '14px', marginRight: '6px' }} /> GitHub
-          </button>
-        </div>
-
-        {mode === 'forgot' ? (
-          <p style={{ fontSize: '0.75rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <a href="#" onClick={() => setMode('signin')} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
-              Back to Login
-            </a>
-          </p>
-        ) : (
-          <>
-            <p style={{ fontSize: '0.75rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-              <span>{mode === 'signup' ? 'Already have an account?' : 'New to ShaVex OS?'}</span>{' '}
-              <a
-                href="#"
-                onClick={() => setMode(mode === 'signup' ? 'signin' : 'signup')}
-                style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}
-              >
-                {mode === 'signup' ? 'Log In' : 'Create Account'}
-              </a>
-            </p>
-            {mode === 'signin' && (
-              <p style={{ fontSize: '0.7rem', textAlign: 'center', marginTop: '10px' }}>
-                <a href="#" onClick={() => setMode('forgot')} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>
-                  Forgot Password?
+            {mode === 'forgot' ? (
+              <p style={{ fontSize: '0.72rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                <a href="#" onClick={() => setMode('signin')} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
+                  Back to Login
                 </a>
               </p>
+            ) : (
+              <>
+                <p style={{ fontSize: '0.72rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <span>{mode === 'signup' ? 'Already have an account?' : 'New to ShaVex OS?'}</span>{' '}
+                  <a
+                    href="#"
+                    onClick={() => setMode(mode === 'signup' ? 'signin' : 'signup')}
+                    style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    {mode === 'signup' ? 'Log In' : 'Create Account'}
+                  </a>
+                </p>
+                {mode === 'signin' && (
+                  <p style={{ fontSize: '0.68rem', textAlign: 'center', marginTop: '10px' }}>
+                    <a href="#" onClick={() => setMode('forgot')} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>
+                      Forgot Password?
+                    </a>
+                  </p>
+                )}
+              </>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
