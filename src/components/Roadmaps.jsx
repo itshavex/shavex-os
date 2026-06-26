@@ -224,7 +224,7 @@ export default function Roadmaps() {
   return (
     <div className="tab-pane active" id="roadmaps">
       
-      <div className="grid-2-1">
+      <div className="dashboard-grid">
         
         {/* Main Journey Maps Visualizer */}
         <div>
@@ -388,7 +388,7 @@ export default function Roadmaps() {
                       </div>
 
                       {/* Add Resource to Knowledge Vault */}
-                      <form onSubmit={(e) => handleAddResource(e, phaseIdx)} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', background: 'rgba(255,255,255,0.01)', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                      <form className="responsive-2col-grid" onSubmit={(e) => handleAddResource(e, phaseIdx)} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', background: 'rgba(255,255,255,0.01)', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.03)' }}>
                         <input
                           type="text"
                           className="task-input"

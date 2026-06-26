@@ -1845,47 +1845,119 @@ body {
 }
 
 @media (max-width: 768px) {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     flex-direction: column;
+    overflow-x: hidden;
   }
   .app-container {
     flex-direction: column;
+    padding-bottom: 65px; /* Space for bottom nav */
   }
+  .main-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  /* Sticky Bottom Navigation */
   .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    height: auto;
-    padding: 16px;
+    height: 65px;
+    padding: 0;
+    flex-direction: row;
     border-right: none;
-    border-bottom: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    background: rgba(4, 4, 6, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
   }
-  .sidebar-logo {
-    margin-bottom: 16px;
+  .sidebar-logo, .sidebar-footer {
+    display: none;
   }
   .sidebar-nav {
     flex-direction: row;
     overflow-x: auto;
-    padding-bottom: 8px;
+    overflow-y: hidden;
+    padding: 0 10px;
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+  }
+  .sidebar-nav::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for nav */
   }
   .nav-item {
+    flex-direction: column;
     padding: 8px 12px;
-    font-size: 0.85rem;
+    font-size: 0.65rem;
+    gap: 4px;
     white-space: nowrap;
+    border-radius: 8px;
+    justify-content: center;
   }
-  .sidebar-footer {
-    display: none;
+  .nav-item i {
+    width: 20px;
+    height: 20px;
   }
+  
+  /* Header adjustments */
   .header {
-    padding: 0 20px;
-    height: 70px;
+    padding: 0 16px;
+    height: 60px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
+  .header-actions {
+    gap: 12px;
+  }
+  .header-title-section h1 {
+    font-size: 1.1rem;
+  }
+  
+  /* Main Content Pane */
   .content-pane {
+    padding: 16px;
+    overflow-x: hidden;
+  }
+  
+  /* Grids & Layouts stacking */
+  .dashboard-grid,
+  .mission-status-grid,
+  .kpi-grid,
+  .tracks-container-grid,
+  .resources-tracking-header,
+  .responsive-2col-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  /* Cards & Heros */
+  .dashboard-hero {
     padding: 20px;
   }
-  .kpi-grid {
-    grid-template-columns: 1fr;
+  .welcome-text {
+    font-size: 1.6rem;
   }
-  .resources-tracking-header {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .mission-stat-item {
+    padding: 8px 12px;
+  }
+  
+  /* Utilities for responsive text & overlapping elements */
+  .xp-header-row,
+  .project-card-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .heatmap-grid-container {
+    gap: 4px; /* Slightly tighter on mobile */
+  }
+  .kpi-card, .glass {
+    padding: 16px;
   }
 }
