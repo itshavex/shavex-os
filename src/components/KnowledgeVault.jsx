@@ -109,6 +109,9 @@ export default function KnowledgeVault() {
   const [notes, setNotes] = useState('');
   const [tagsStr, setTagsStr] = useState('');
   const [associatedPhase, setAssociatedPhase] = useState('All');
+  const [difficulty, setDifficulty] = useState('Medium');
+  const [priority, setPriority] = useState('High');
+  const [revisionDate, setRevisionDate] = useState('');
 
   const currentGoalName = state.currentGoalName || "AI Engineer";
   const activeGoal = state.goals?.[currentGoalName];
@@ -130,7 +133,10 @@ export default function KnowledgeVault() {
       url: url.trim(),
       notes: notes.trim(),
       tags: tags,
-      phaseName: associatedPhase
+      phaseName: associatedPhase,
+      difficulty,
+      priority,
+      revisionDate
     };
 
     const activeList = [...(state.vault || [])];
@@ -143,6 +149,9 @@ export default function KnowledgeVault() {
     setNotes('');
     setTagsStr('');
     setAssociatedPhase('All');
+    setDifficulty('Medium');
+    setPriority('High');
+    setRevisionDate('');
   };
 
   const handleDeleteVaultItem = (id) => {
@@ -358,6 +367,11 @@ export default function KnowledgeVault() {
                           ))}
                         </div>
                       )}
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: 'var(--text-tertiary)', marginTop: '4px' }}>
+                        <span>Diff: {item.difficulty || 'Medium'} | Prio: {item.priority || 'High'}</span>
+                        {item.revisionDate && <span>Revise by: {item.revisionDate}</span>}
+                      </div>
                     </div>
                   </div>
                 );

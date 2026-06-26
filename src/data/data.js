@@ -43,6 +43,13 @@ export const ROADMAP_PRESETS = {
     { name: "Deployment", milestones: ["Deploy frontend to Vercel/Netlify", "Deploy backend host servers"], resources: [] },
     { name: "Projects", milestones: ["Build responsive ecommerce portal", "Build dynamic notes application"], resources: [] }
   ],
+  "Backend Engineer": [
+    { name: "Programming Foundations", milestones: ["Java/Python/Go Basics", "Data Structures", "Algorithms", "Concurrency"], resources: [] },
+    { name: "APIs & Web", milestones: ["REST", "GraphQL", "gRPC", "WebSockets"], resources: [] },
+    { name: "Databases", milestones: ["PostgreSQL", "MongoDB", "Redis Caching", "Database Design"], resources: [] },
+    { name: "System Design", milestones: ["Scalability", "Microservices", "Message Queues (Kafka/RabbitMQ)"], resources: [] },
+    { name: "Deployment", milestones: ["Docker Containers", "CI/CD Pipelines", "Basic AWS/GCP"], resources: [] }
+  ],
   "Cloud Engineer": [
     { name: "Networking", milestones: ["TCP/IP, DNS, & HTTP protocols", "IP Subnetting & Routing", "Firewalls & VPCs setup"], resources: [] },
     { name: "Linux", milestones: ["Linux terminal commands", "File permissions & users", "Bash scripting basics"], resources: [] },
@@ -54,6 +61,13 @@ export const ROADMAP_PRESETS = {
     { name: "Security", milestones: ["Network access controls", "Cloud auditing logs configuration"], resources: [] },
     { name: "Monitoring", milestones: ["Set performance metrics monitors", "Create custom warning triggers"], resources: [] },
     { name: "Projects", milestones: ["Deploy highly-available architecture", "Configure multi-tier network script"], resources: [] }
+  ],
+  "DevOps Engineer": [
+    { name: "Linux & Scripting", milestones: ["Advanced Bash", "Python Scripting", "Cron & Automations"], resources: [] },
+    { name: "Networking & Security", milestones: ["DNS & DHCP", "Firewalls", "SSH Tunnels"], resources: [] },
+    { name: "Infrastructure as Code", milestones: ["Terraform", "Ansible", "CloudFormation"], resources: [] },
+    { name: "CI/CD & Containers", milestones: ["Docker & Compose", "Kubernetes", "GitHub Actions", "Jenkins"], resources: [] },
+    { name: "Monitoring", milestones: ["Prometheus", "Grafana", "ELK Stack"], resources: [] }
   ],
   "Cyber Security": [
     { name: "Networking", milestones: ["Understand TCP/IP layers", "Analyze packet protocols (Wireshark)", "Routing & ports settings"], resources: [] },

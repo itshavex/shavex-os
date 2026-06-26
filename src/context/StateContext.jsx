@@ -850,6 +850,51 @@ export const StateProvider = ({ children }) => {
     }
   };
 
+  const restartJourney = () => {
+    const cloned = JSON.parse(JSON.stringify(state));
+    cloned.goals = {};
+    cloned.currentGoalName = "";
+    cloned.missions = { today: [], weekly: [], monthly: [] };
+    cloned.memory = {
+        lastCompletedMilestone: "None",
+        lastActiveRoadmapPhase: "None",
+        lastMission: "None",
+        lastStudyResource: "None",
+        lastStudySession: null,
+        consistencyHistory: []
+    };
+    cloned.vault = [];
+    cloned.reflections = {};
+    cloned.fitness = { steps: {}, waterIntake: {}, weight: {} };
+    cloned.xp = 0;
+    cloned.onboarded = false;
+    
+    saveState(cloned);
+  };
+
+  const exportWorkspace = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "shavex_os_workspace.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
+  const importWorkspace = (jsonStr) => {
+    try {
+      const parsed = JSON.parse(jsonStr);
+      const merged = deepMerge(JSON.parse(JSON.stringify(INITIAL_STATE)), parsed);
+      saveState(merged);
+      return true;
+    } catch (err) {
+      console.error("Import failed", err);
+      return false;
+    }
+  };
+
+
   return (
     <StateContext.Provider value={{
       state,
@@ -888,7 +933,10 @@ export const StateProvider = ({ children }) => {
       deleteMilestone,
       toggleMilestone,
       addResourceToPhase,
-      deleteResourceFromPhase
+      deleteResourceFromPhase,
+      restartJourney,
+      exportWorkspace,
+      importWorkspace
     }}>
       {children}
     </StateContext.Provider>

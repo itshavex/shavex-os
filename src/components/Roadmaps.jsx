@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppState } from '../context/StateContext';
-import { Map, Plus, Trash2, Edit3, ArrowUp, ArrowDown, ExternalLink, Link, Check } from 'lucide-react';
+import { Map, Plus, Trash2, Edit3, ArrowUp, ArrowDown, ExternalLink, Link, Check, Sparkles } from 'lucide-react';
 
 export default function Roadmaps() {
   const { state, saveState, updateNextMoveEngine } = useAppState();
@@ -245,14 +245,16 @@ export default function Roadmaps() {
               </p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative', paddingLeft: '24px', borderLeft: '2px solid rgba(0, 102, 255, 0.2)', marginLeft: '12px' }}>
               {activeGoal.phases?.map((phase, phaseIdx) => {
                 const completedCount = phase.milestones?.filter(m => m.completed).length || 0;
                 const totalCount = phase.milestones?.length || 0;
                 const phaseProgress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
                 return (
-                  <div key={phaseIdx} className="glass p-5" style={{ borderLeft: phaseProgress === 100 ? '4px solid var(--accent-green)' : '1px solid var(--border-color)' }}>
+                  <div key={phaseIdx} className="glass p-5" style={{ position: 'relative', border: phaseProgress === 100 ? '1px solid var(--accent-green)' : '1px solid var(--border-color)' }}>
+                    {/* Timeline Dot */}
+                    <div style={{ position: 'absolute', left: '-36px', top: '24px', width: '16px', height: '16px', borderRadius: '50%', background: phaseProgress === 100 ? 'var(--accent-green)' : 'var(--primary)', border: '3px solid #000' }}></div>
                     
                     {/* Header bar */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
@@ -312,11 +314,21 @@ export default function Roadmaps() {
                       const forgettingCurve = state.aiProfile?.forgettingCurve || {};
                       const healthVal = forgettingCurve[phase.name] !== undefined ? forgettingCurve[phase.name] : 100;
                       return (
-                        <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', fontSize: '0.7rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
-                          <span>Journey Progress: {phaseProgress}% ({completedCount}/{totalCount} Missions)</span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            🧠 Knowledge Health: <strong style={{ color: healthVal > 75 ? 'var(--accent-green)' : healthVal > 55 ? 'var(--accent-orange)' : 'var(--accent-red)' }}>{healthVal}%</strong>
-                          </span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '12px' }}>
+                          <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                            <span>Journey Progress: {phaseProgress}% ({completedCount}/{totalCount} Missions)</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              🧠 Knowledge Health: <strong style={{ color: healthVal > 75 ? 'var(--accent-green)' : healthVal > 55 ? 'var(--accent-orange)' : 'var(--accent-red)' }}>{healthVal}%</strong>
+                            </span>
+                          </div>
+                          
+                          <div style={{ display: 'flex', gap: '8px', fontSize: '0.65rem' }}>
+                            <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px' }}>⏱ Est. 12-15 Hours</span>
+                            <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px' }}>📊 Intermediate</span>
+                            <span style={{ padding: '2px 6px', background: 'rgba(0,102,255,0.1)', color: 'var(--primary)', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                              <Sparkles size={8} /> AI Recommendation: {healthVal < 65 ? "Requires immediate revision" : "Nominal pace"}
+                            </span>
+                          </div>
                         </div>
                       );
                     })()}

@@ -63,6 +63,8 @@ export default function Onboarding() {
   const [customGoal, setCustomGoal] = useState('');
   const [skillLevel, setSkillLevel] = useState('Beginner');
   const [targetYear, setTargetYear] = useState('2027');
+  const [existingSkills, setExistingSkills] = useState('');
+  const [learningStyle, setLearningStyle] = useState('Visual Learner');
   const [dailyTime, setDailyTime] = useState('4 hr');
 
   // Loading & Flow state
@@ -132,7 +134,8 @@ export default function Onboarding() {
       cloned.profile.primaryGoal = goalName;
       cloned.profile.missionStatement = `I want to become a ${goalName} by ${targetYear}.`;
       cloned.profile.preferredStudyTime = "18:00 - 21:00 (Evening)";
-      cloned.profile.learningStyle = "Visual Learner";
+      cloned.profile.learningStyle = learningStyle;
+      cloned.profile.existingSkills = existingSkills;
       cloned.profile.secondaryGoals = ["Fitness"];
       cloned.profile.skillLevel = skillLevel;
       cloned.profile.targetYear = targetYear;
@@ -495,12 +498,60 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Step 5: Daily Available Time */}
+            {/* Step 5: Existing Skills */}
             {step === 4 && (
               <div className="onboarding-slide active">
-                <label className="onboard-label">5. Daily Available Time?</label>
+                <label className="onboard-label">5. Any existing skills? (Optional)</label>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    className="task-input"
+                    placeholder="e.g. Python, SQL, Marketing"
+                    value={existingSkills}
+                    onChange={(e) => setExistingSkills(e.target.value)}
+                  />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px', marginTop: '24px' }}>
+                  <button type="button" className="priority-toggle" onClick={handleBack}>Back</button>
+                  <button onClick={handleNext} className="focus-btn">Continue</button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 6: Learning Style */}
+            {step === 5 && (
+              <div className="onboarding-slide active">
+                <label className="onboard-label">6. What is your preferred learning style?</label>
+                <div className="onboard-list-vertical" style={{ gap: '10px' }}>
+                  {[
+                    { val: 'Visual Learner', title: 'Visual', desc: 'I prefer videos, diagrams, and charts' },
+                    { val: 'Auditory Learner', title: 'Auditory', desc: 'I prefer listening to lectures and discussions' },
+                    { val: 'Reading & Writing', title: 'Reading/Writing', desc: 'I prefer reading text and taking notes' },
+                    { val: 'Kinesthetic Learner', title: 'Kinesthetic', desc: 'I prefer hands-on building and practice' }
+                  ].map((item) => (
+                    <div
+                      key={item.val}
+                      className={`onboard-row-opt ${learningStyle === item.val ? 'active' : ''}`}
+                      onClick={() => setLearningStyle(item.val)}
+                    >
+                      <strong>{item.title}</strong>
+                      <span>{item.desc}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px', marginTop: '24px' }}>
+                  <button type="button" className="priority-toggle" onClick={handleBack}>Back</button>
+                  <button onClick={handleNext} className="focus-btn">Continue</button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 7: Daily Available Time */}
+            {step === 6 && (
+              <div className="onboarding-slide active">
+                <label className="onboard-label">7. Daily Available Time?</label>
                 <div className="onboard-options-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  {['30 min', '1 hr', '2 hr', '4 hr', '6+ hr'].map((val) => (
+                  {['15 min', '30 min', '1 hr', '2 hr', '4 hr', '6+ hr'].map((val) => (
                     <div
                       key={val}
                       className={`onboard-opt ${dailyTime === val ? 'active' : ''}`}

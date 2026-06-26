@@ -11,7 +11,10 @@ export default function ProfilePage({ active, onClose }) {
     calculateProfileCompletion,
     generateUsernameSuggestions,
     isUsernameAvailable,
-    calculateRoadHealth
+    calculateRoadHealth,
+    restartJourney,
+    exportWorkspace,
+    importWorkspace
   } = useAppState();
 
   const user = state.auth.user;
@@ -357,7 +360,7 @@ export default function ProfilePage({ active, onClose }) {
         </div>
 
         {/* Action Controls */}
-        <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginBottom: '16px' }}>
           <button 
             onClick={handleSave} 
             disabled={!isModified || !usernameValid} 
@@ -366,6 +369,52 @@ export default function ProfilePage({ active, onClose }) {
           >
             {savedSuccess ? '✔ Changes Saved' : 'Save System Profile'}
           </button>
+        </div>
+
+        {/* Data & System Management */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '24px' }}>
+          <button 
+            onClick={() => {
+              if (window.confirm("Are you sure you want to restart? This will reset your roadmaps, progress, and memory but keep your profile.")) {
+                restartJourney();
+                onClose();
+              }
+            }}
+            className="priority-toggle" 
+            style={{ height: '36px', fontSize: '0.75rem', justifyContent: 'center', borderColor: 'rgba(255, 61, 0, 0.3)', color: 'var(--accent-orange)' }}
+          >
+            Restart Journey
+          </button>
+          <button 
+            onClick={() => exportWorkspace()}
+            className="priority-toggle" 
+            style={{ height: '36px', fontSize: '0.75rem', justifyContent: 'center' }}
+          >
+            Export Workspace
+          </button>
+          
+          <label className="priority-toggle" style={{ height: '36px', fontSize: '0.75rem', justifyContent: 'center', cursor: 'pointer', margin: 0 }}>
+            Import Workspace
+            <input 
+              type="file" 
+              accept=".json" 
+              style={{ display: 'none' }} 
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                  if (importWorkspace(ev.target.result)) {
+                    alert('Workspace imported successfully!');
+                    onClose();
+                  } else {
+                    alert('Failed to import workspace.');
+                  }
+                };
+                reader.readAsText(file);
+              }}
+            />
+          </label>
         </div>
 
         {/* Read-Only System Statistics Block */}
