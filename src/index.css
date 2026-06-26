@@ -1,6 +1,29 @@
-@import "./styles/style.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply bg-background text-primary font-sans antialiased overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-surface border border-border rounded-2xl shadow-lg backdrop-blur-md;
+  }
+  
+  .glass-hover {
+    @apply transition-colors duration-200 hover:bg-surfaceHover hover:border-white/20;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
